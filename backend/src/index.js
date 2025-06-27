@@ -12,9 +12,21 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 app.use(express.json());
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://qreward.netlify.app",
+];
+
 app.use(
   cors({
-    origin:"http://localhost:5173",
+    origin: function (origin, callback) {
+      // allow requests with no origin (like mobile apps, curl, etc.)
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );

@@ -22,6 +22,6 @@ router.put("/:id", protectRoute, updateRecentActivity);
 router.delete("/:id", protectRoute, deleteRecentActivity);
 
 // Get recent activities by company (only for company role)
-router.get("/company", protectRoute, getrecentactivitybycompany);
+// router.get("/company", protectRoute, getrecentactivitybycompany);
 
 export default router;

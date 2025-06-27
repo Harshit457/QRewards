@@ -371,7 +371,7 @@ function Dashboard() {
         </motion.div>
 
         {/* Recent Activity */}
-        <motion.div
+        {/* <motion.div
       className="bg-white rounded-xl shadow-md overflow-hidden"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -442,7 +442,7 @@ function Dashboard() {
           </div>
         )}
       </div>
-    </motion.div>
+    </motion.div> */}
       </div>
     </div>
   );

@@ -248,11 +248,11 @@ function Dashboard() {
 
             <div className="mt-6">
               <Link
-                to="/user/scan"
+                to="/user/offers"
                 className="btn btn-primary w-full flex items-center justify-center"
               >
                 <FaQrcode className="mr-2" />
-                Scan New QR Code
+                Browse Campaigns
               </Link>
             </div>
           </div>

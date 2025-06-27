@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { QRCodeSVG } from "qrcode.react";
 import { createPromotion } from "../../store/promotionslice";
 import { useDispatch, useSelector } from "react-redux";
+import { parseEther } from "ethers"; // from ethers@6
 import {
   FaTrash,
   FaPlus,
@@ -18,7 +19,10 @@ import {
   FaFileDownload,
   FaCheckCircle,
 } from "react-icons/fa";
-import { createCampaign } from "../../utils/contractInteraction";
+import {
+  createCampaign,
+  getWinningHashes,
+} from "../../utils/contractInteraction";
 function CreatePromotion1() {
   const {
     register,
@@ -84,14 +88,27 @@ function CreatePromotion1() {
 
       const totalPrizes = promotionData.prizes[0].winners;
       const prizePerWinner = promotionData.prizes[0].amount;
-      
+      const convertRupeesToWei = (rupeeAmount) => {
+        const ethRateInRupees = 200000; // you can fetch this dynamically if needed
+        const etherAmount = rupeeAmount / ethRateInRupees;
+        return parseEther(etherAmount.toString()); // returns value in wei (BigInt)
+      };
+      const pruizePerWinnerInWei = convertRupeesToWei(prizePerWinner);
 
       const txHash = await createCampaign(
         totalPrizes,
-        prizePerWinner,
+        pruizePerWinnerInWei,
         durationInSeconds
       );
       console.log("Transaction Hash:", txHash);
+      // const campaignId = await createCampaign(
+      //   totalPrizes,
+      //   prizePerWinner,
+      //   durationInSeconds,
+      //   totalPrizes * prizePerWinner // total ETH value
+      // );
+      // console.log("🆔 Campaign ID:", campaignId);
+
       const newPromotion = {
         title: promotionData.name,
         totalBudget:
@@ -111,28 +128,66 @@ function CreatePromotion1() {
           },
         ],
       }; // ✅ Should now log correctly
-
-      await dispatch(createPromotion(newPromotion)).unwrap();
-
+      const created = await dispatch(createPromotion(newPromotion)).unwrap();
+      const promotionId = created.promotionId; //
+      console.log("Promotion created with ID:", promotionId);
       alert("Campaign created successfully!");
+      const qrCount = promotionData.qrCodes;
+      const winningCount = promotionData.prizes[0].winners;
 
       setContractAddress(
-        "0x50d461fe670c9042b0dbf08a0354bccc277b5078" +
+        "0x2681d3eb49d6f4eb7f5d9f7304591cef1153c7fd" +
           Math.random().toString(16).substr(2, 40)
       );
 
       setStep(3);
 
-      const generateQRCodes = async () => {
+      const generateQRCodes = async (promotionId, qrCount, winningCount) => {
         const codes = [];
-        for (let i = 1; i <= promotionData.qrCodes; i++) {
-          const dataUrl = await QRCode.toDataURL(i.toString());
-          codes.push({ id: i, src: dataUrl });
-        }
-        setQrCodes(codes);
-      };
 
-      await generateQRCodes();
+        // 1. Fetch winning hashes from smart contract
+        console.log("Fetching winning hashes for promotion ID:", promotionId);
+        const winningHashes = await getWinningHashes(promotionId);
+
+        if (winningHashes.length < winningCount) {
+          throw new Error("Not enough winning hashes from contract");
+        }
+
+        // 2. Select first N winning hashes
+        const selectedWinners = winningHashes.slice(0, winningCount);
+
+        // 3. Fill rest with dummy hashes (random bytes32-like)
+        const dummyHashes = [];
+        for (let i = 0; i < qrCount - winningCount; i++) {
+          dummyHashes.push(
+            "0x" +
+              Array.from(crypto.getRandomValues(new Uint8Array(32)))
+                .map((b) => b.toString(16).padStart(2, "0"))
+                .join("")
+          );
+        }
+
+        // 4. Combine and shuffle
+        function shuffleArray(array) {
+          for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+          }
+          return array;
+        }
+
+        // Usage:
+        const allHashes = shuffleArray([...selectedWinners, ...dummyHashes]);
+
+        // 5. Generate QR codes for each hash
+        for (let i = 0; i < allHashes.length; i++) {
+          const src = await QRCode.toDataURL(allHashes[i]);
+          codes.push({ id: i + 1, src, hash: allHashes[i] });
+        }
+
+        setQrCodes(codes); // Returns array of { id, src, hash }
+      };
+      await generateQRCodes(promotionId, qrCount, winningCount);
     } catch (error) {
       console.error(error);
       alert("Failed to create campaign.");

@@ -58,7 +58,7 @@ promotionSchema.pre("save", async function (next) {
   if (this.isNew) {
     const counter = await Counter.findOneAndUpdate(
       { name: "promotionId" },
-      { $inc: { value: 1 } },
+      { $inc: { value: 2 } }, // Increment by 2 to keep only odd numbers
       { new: true, upsert: true }
     );
     this.promotionId = counter.value;

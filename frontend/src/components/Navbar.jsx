@@ -70,7 +70,7 @@ function Navbar({ transparent = false, minimal = false }) {
       <nav className="container-custom flex items-center justify-between py-4">
         <Link to="/" className="flex items-center space-x-2">
           <Logo
-            size={36}
+            size={40}
             color={scrolled || !transparent ? "#0066FF" : "#0066FF"}
           />
           <span
@@ -78,7 +78,7 @@ function Navbar({ transparent = false, minimal = false }) {
               scrolled || !transparent ? "text-slate-900" : "text-slate-900"
             }`}
           >
-            WinScan
+            QReward
           </span>
         </Link>
 
@@ -138,13 +138,13 @@ function Navbar({ transparent = false, minimal = false }) {
                         >
                           <FaGift className="inline mr-2" /> Browse Offers
                         </Link>
-                        <Link
+                        {/* <Link
                           to="/user/scan"
                           className="block px-4 py-2 text-slate-800 hover:bg-slate-100"
                           onClick={() => setIsOpen(false)}
                         >
                           <FaQrcode className="inline mr-2" /> Scan QR
-                        </Link>
+                        </Link> */}
                       </>
                     )}
                     {userType === "company" && (

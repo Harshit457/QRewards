@@ -6,11 +6,7 @@
   },
   {
     "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_totalPrizes",
-        "type": "uint256"
-      },
+      { "internalType": "uint256", "name": "_totalPrizes", "type": "uint256" },
       {
         "internalType": "uint256",
         "name": "_prizePerWinner",
@@ -29,16 +25,8 @@
   },
   {
     "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_campaignId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_qrNumber",
-        "type": "uint256"
-      }
+      { "internalType": "uint256", "name": "_campaignId", "type": "uint256" },
+      { "internalType": "bytes32", "name": "_qrHash", "type": "bytes32" }
     ],
     "name": "claimPrize",
     "outputs": [],
@@ -47,11 +35,7 @@
   },
   {
     "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_campaignId",
-        "type": "uint256"
-      }
+      { "internalType": "uint256", "name": "_campaignId", "type": "uint256" }
     ],
     "name": "endCampaign",
     "outputs": [],
@@ -60,45 +44,34 @@
   },
   {
     "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_campaignId",
-        "type": "uint256"
-      }
+      { "internalType": "uint256", "name": "_campaignId", "type": "uint256" }
     ],
     "name": "getCampaignBalance",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "platformOwner",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "platformFeePercent",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "_campaignId", "type": "uint256" }
+    ],
+    "name": "getWinningHashes",
     "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
+      { "internalType": "bytes32[]", "name": "", "type": "bytes32[]" }
     ],
     "stateMutability": "view",
     "type": "function"
@@ -110,6 +83,30 @@
         "indexed": true,
         "internalType": "uint256",
         "name": "campaignId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "company",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "totalFunds",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "prizePerWinner",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "endTime",
         "type": "uint256"
       }
     ],
@@ -126,16 +123,16 @@
         "type": "uint256"
       },
       {
-        "indexed": true,
+        "indexed": false,
         "internalType": "address",
         "name": "winner",
         "type": "address"
       },
       {
         "indexed": false,
-        "internalType": "uint256",
-        "name": "luckyNumber",
-        "type": "uint256"
+        "internalType": "bytes32",
+        "name": "qrHash",
+        "type": "bytes32"
       }
     ],
     "name": "PrizeClaimed",
@@ -159,25 +156,5 @@
     ],
     "name": "CampaignEnded",
     "type": "event"
-  },
-  {
-  "inputs": [
-    {
-      "internalType": "uint256",
-      "name": "_campaignId",
-      "type": "uint256"
-    }
-  ],
-  "name": "getWinningHashes",
-  "outputs": [
-    {
-      "internalType": "bytes32[]",
-      "name": "",
-      "type": "bytes32[]"
-    }
-  ],
-  "stateMutability": "view",
-  "type": "function"
-}
-  
+  }
 ]

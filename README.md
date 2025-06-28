@@ -89,7 +89,7 @@ Copy
 Edit
 MONGODB_URI=mongodb+srv://your-db-uri
 JWT_SECRET=your-secret-key
-PORT=5000
+PORT=5001
 ```
 3️⃣ Backend Setup
 ```bash

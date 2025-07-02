@@ -156,7 +156,7 @@ function LoginPage() {
                 disabled={loading}
                 className="w-full btn btn-primary"
               >
-                {loading ? 'Logging in...' : 'Log In'}
+                {loading ? 'backend is rendering...' : 'Log In'}
               </button>
             </form>
 

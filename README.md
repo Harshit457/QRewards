@@ -90,6 +90,10 @@ Edit
 MONGODB_URI=mongodb+srv://your-db-uri
 JWT_SECRET=your-secret-key
 PORT=5000
+
+.env for frontend/
+VITE_CONTRACT_ADDRESS = your contract address here
+
 ```
 3️⃣ Backend Setup
 ```bash
@@ -97,9 +101,30 @@ cd backend
 npm install
 npm run dev
 ```
-4️⃣ Frontend Setup
+4️⃣ Smart Contract Deployment
+A contract.sol file exists at the root level under a folder named contractSolididty/.
+
+Steps to deploy:
+Open Remix IDE
+
+- Paste the contents of contractSolididty/contract.sol into a new file.
+
+- Compile the contract in Remix.
+
+- Deploy the contract using MetaMask on Sepolia Testnet.
+
+- Copy the deployed contract address.
+
+- Update your VITE_CONTRACT_ADDRESS in the frontend .env.
+
+5 Frontend Setup
 ```bash
 cd frontend
 npm install
 npm run dev
+```
+📌 Note: Ignore Solidity linting errors in Remix — focus on successful compilation and deployment.
+💡 Make sure your wallet is connected to the Sepolia Testnet with some test ETH for transactions.
+
+
 

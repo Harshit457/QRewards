@@ -2,9 +2,10 @@ import { ethers , Interface } from "ethers";
 import MetaMaskSDK from "@metamask/sdk";
 import abi from "./abi.json";
 
-const CONTRACT_ADDRESS = "0x2681d3eb49d6f4eb7f5d9f7304591cef1153c7fd";
 
+const CONTRACT_ADDRESS = import.meta.env.VITE_CONTRACT_ADDRESS || "0xYourContractAddressHere";
 
+console.log("Using contract address:", CONTRACT_ADDRESS);
 // ✅ Setup MetaMask SDK correctly
 const MMSDK = new MetaMaskSDK({
   dappMetadata: {

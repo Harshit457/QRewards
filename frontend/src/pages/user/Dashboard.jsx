@@ -70,6 +70,7 @@ function Dashboard() {
   const [activeTab, setActiveTab] = useState("overview");
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [isWalletConnected, setIsWalletConnected] = useState(false);
   const { activities, loading, error } = useSelector(
     (state) => state.activities
   );
@@ -104,6 +105,49 @@ function Dashboard() {
       setTotalWinnings(total);
     }
   }, [activities]);
+  useEffect(() => {
+    checkWalletConnection();
+  }, []);
+  const checkWalletConnection = async () => {
+    if (typeof window.ethereum !== "undefined") {
+      try {
+        const accounts = await window.ethereum.request({
+          method: "eth_accounts",
+        });
+        if (accounts.length > 0) {
+          setIsWalletConnected(true);
+        }
+      } catch (error) {
+        console.error("Wallet check failed:", error);
+      }
+    }
+  };
+  const isMobile = () => {
+    return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  };
+
+  const handleClick = async () => {
+    if (typeof window.ethereum !== "undefined") {
+      try {
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+        if (accounts.length > 0) {
+          setIsWalletConnected(true);
+          navigate("/user/offers");
+        }
+      } catch (error) {
+        console.error("Wallet connection failed:", error);
+      }
+    } else {
+      if (isMobile()) {
+        const dappUrl = encodeURIComponent(window.location.host);
+        window.location.href = `https://metamask.app.link/dapp/Qreward.netlify.app`;
+      } else {
+        alert("Metamask not found. Please install it to continue.");
+      }
+    }
+  };
 
   if (isLoading) {
     return (
@@ -247,13 +291,13 @@ function Dashboard() {
             </div>
 
             <div className="mt-6">
-              <Link
-                to="/user/offers"
+              <button
+                onClick={handleClick}
                 className="btn btn-primary w-full flex items-center justify-center"
               >
                 <FaQrcode className="mr-2" />
-                Browse Campaigns
-              </Link>
+                {isWalletConnected ? "Browse Campaigns" : "Connect Wallet"}
+              </button>
             </div>
           </div>
 

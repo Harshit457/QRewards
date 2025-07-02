@@ -15,13 +15,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchMyPromotions } from "../../store/promotionslice";
 import { getRecentActivitiesByCompany } from "../../store/recentactivityslice";
 
-
-
 function Dashboard() {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [isWalletConnected, setIsWalletConnected] = useState(false);
+  const [currentAccount, setCurrentAccount] = useState(null);
   const { promotions, loading, error } = useSelector(
     (state) => state.promotion
   );
@@ -31,8 +31,30 @@ function Dashboard() {
     error: activitiesError,
   } = useSelector((state) => state.activities);
 
-
-  
+  const handleButtonClick = async () => {
+    if (typeof window.ethereum !== "undefined") {
+      try {
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+        if (accounts.length > 0) {
+          setIsWalletConnected(true);
+          setCurrentAccount(accounts[0]);
+          navigate("/company/promotion/create");
+        }
+      } catch (error) {
+        console.error("Error connecting wallet:", error);
+      }
+    } else {
+      // Fallback for mobile
+      if (isMobile()) {
+        const dappUrl = encodeURIComponent(window.location.href); // Your website URL
+        window.location.href = `https://metamask.app.link/dapp/Qreward.netlify.app`;
+      } else {
+        alert("Metamask not found. Please install Metamask extension.");
+      }
+    }
+  };
 
   useEffect(() => {
     // Check if user is logged in
@@ -50,15 +72,37 @@ function Dashboard() {
     }
 
     setUser(parsedUser);
-    
+
     setIsLoading(false);
   }, [navigate]);
-   useEffect(() => {
+  useEffect(() => {
     dispatch(fetchMyPromotions());
     dispatch(getRecentActivitiesByCompany());
   }, [dispatch]);
   const getTotalBudget = () => {
     return promotions.reduce((acc, promo) => acc + promo.totalBudget, 0);
+  };
+
+  useEffect(() => {
+    checkWalletConnection();
+  }, []);
+  const checkWalletConnection = async () => {
+    if (typeof window.ethereum !== "undefined") {
+      try {
+        const accounts = await window.ethereum.request({
+          method: "eth_accounts",
+        });
+        if (accounts.length > 0) {
+          setIsWalletConnected(true);
+          setCurrentAccount(accounts[0]);
+        }
+      } catch (error) {
+        console.error("Error checking wallet connection:", error);
+      }
+    }
+  };
+  const isMobile = () => {
+    return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
   };
 
   if (isLoading) {
@@ -110,7 +154,7 @@ function Dashboard() {
     (sum, promo) => sum + promo.scannedQRCodes,
     0
   );
-  
+
   const sortedActivities = [...activities].sort(
     (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
   );
@@ -138,13 +182,13 @@ function Dashboard() {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="mt-4 md:mt-0"
             >
-              <Link
-                to="/company/promotion/create"
+              <button
+                onClick={handleButtonClick}
                 className="btn btn-gold btn-lg flex items-center"
               >
                 <FaPlus className="mr-2" />
-                Create New Promotion
-              </Link>
+                {isWalletConnected ? "Create New Promotion" : "Connect Wallet"}
+              </button>
             </motion.div>
           </div>
         </div>

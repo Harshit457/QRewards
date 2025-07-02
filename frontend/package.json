@@ -13,6 +13,7 @@
     "@metamask/sdk": "^0.33.0",
     "@reduxjs/toolkit": "^2.7.0",
     "axios": "^1.9.0",
+    "dotenv": "^17.0.1",
     "ethers": "^6.14.4",
     "framer-motion": "^11.0.8",
     "jspdf": "^3.0.1",

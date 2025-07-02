@@ -90,10 +90,6 @@ Edit
 MONGODB_URI=mongodb+srv://your-db-uri
 JWT_SECRET=your-secret-key
 PORT=5000
-
-.env for frontend/
-VITE_CONTRACT_ADDRESS = your contract address here
-
 ```
 3️⃣ Backend Setup
 ```bash
